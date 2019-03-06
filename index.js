@@ -248,14 +248,27 @@ getTime() { // EDIT THIS
 									<h1 style = {{color: this.state.farColour}} onClick = {this.state.toggle ? this.celToFarConvert : null}> F </h1>
 								</div>
 							</div>
-							<div class={ style.conditions }>
-								{ this.state.cond }
+							<div>
+								<table align="center">
+									<tr>
+										<td class={ style.currentConditions }>{this.state.cond}</td>
+									</tr>
+									<tr>
+										<td class={ style.lastUpdated }>Last updated --:--</td>
+									</tr>
+									<tr>
+										<td class={ style.feelsLike }>Feels like --°</td>
+									</tr>
+									<tr>
+										<td class={ style.dailyLook }>Daily Look</td>
+									</tr>
+								</table>
 							</div>
 							<div class = {style.forecasts} >
 								<table>
 									<tr>
 										{this.state.days.map((item, key) => {
-											return <td key={key}>{item}</td>
+											return <td class = {style.dates} key = {key}>{item}</td>
 										})}
 									</tr>
 									<tr>
@@ -265,13 +278,13 @@ getTime() { // EDIT THIS
 									</tr>
 									<tr>
 										{this.state.forecasts.map((item, key) => {
-											return <td class = {forecastStyles} key = {key}> {item} </td>
+											return <td class = {style.previewForecastsHigh} key = {key}> {item} °</td>
 										})}
 									</tr>
 
 									<tr>
 										{this.state.conds.map((item, key) => {
-										return <td style = "width: 80px;" key = {key}> {item} </td>
+										return <td style = "width: 80px; class={ style.predictedConditions };"; key = {key}> {item} </td>
 										})}
 									</tr>
 								</table>
