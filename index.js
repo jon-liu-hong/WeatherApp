@@ -12,7 +12,8 @@ export default class Iphone extends Component {
 	// a constructor with initial set states
 	constructor(props){
 		super(props);
-		// temperature state
+
+		// setting the states for various items in the Iphone Component
 		this.state.temp = "";
 		this.state.celColour = 'white';
 		this.state.farColour = 'grey';
@@ -20,28 +21,47 @@ export default class Iphone extends Component {
 		this.state.days = [];
 		this.state.conds = [];
 		this.state.condImages = [];
-		// button display state
+
+		// calling the apis
 		this.fetchAPIs();
+
 		this.setState({display:true, toggle: true, toggle_page:true});
+
+
+		// binding functions to the component instance
 		this.celToFarConvert = this.celToFarConvert.bind(this);
 		this.farToCelConvert = this.farToCelConvert.bind(this);
 		this.toggle_func = this.toggle_func.bind(this);
-		this.fetchLocation  = this.fetchLocation.bind(this,'paramater');
 	}
 
+
+
 	//=======================================
-	//=============== API FETCH =============
+	//=======================================
+	//=======================================
+	//=============== API FETCH =============		DESCRIPTION: FUNCTION WILL MAKE A CALL TO THE API'S USED
 	fetchAPIs (){
+		//these api call calls up
+		this.fetchLocation.call();
 		this.fetchWeatherData.call();
 		this.fetchForecastData.call();
 		this.fetchTflData.call();
-		this.fetchLocation.call();
+		// this.fetchBus.call();
 	}
+	//=======================================
+	//=======================================
+	//=======================================
+	//=======================================
+
+
+
 //=======================================================
 //=======================================================
+//=======================================================
+//================LOCATION API=========================== 		DESCRIPTION: LOCATION API WILL RETURN COORDINATES AND DETAILS OF USER'S LOCATION
 
 fetchLocation= ()=>{
-	let a = navigator.geolocation.getCurrentPosition((pos)=>
+	let a =navigator.geolocation.getCurrentPosition((pos)=>
 	{
 		var crd=pos.coords;
 		var lat= crd.latitude;
@@ -53,46 +73,80 @@ fetchLocation= ()=>{
 			success : this.parseLocationResponse,
 			error : function(req, err){ console.log('API call failed ' + err); }
 		})
-
 	})
-
 }
 
+//=======================================================
+//=======================================================
+//=======================================================
+//=======================================================
+
+
+
 //============================================================
-//=============== WEATHER DATA FETCH AND DISPLAY =============
+//============================================================
+//============================================================
+//=============== WEATHER DATA FETCH AND DISPLAY ============= 		DESCRIPTION: API WILL FETCH DETAILS ABOUT TODAY'S WEATHER
 
 	// a call to fetch weather data via wunderground
 	fetchWeatherData = () => {
 		// API URL with a structure of : ttp://api.wunderground.com/api/key/feature/q/country-code/city.json
-		var url = "http://api.openweathermap.org/data/2.5/weather?q=London&units=metric&APPID=a22d157664c6fbc5a70d03449d24bab3";
+		let a =navigator.geolocation.getCurrentPosition((pos)=>
+		{
+			var crd=pos.coords;
+			var lat= crd.latitude;
+			var long = crd.longitude
+			var url = "http://api.openweathermap.org/data/2.5/weather?lat="+lat+"&lon="+long+"&units=metric&APPID=a22d157664c6fbc5a70d03449d24bab3";
 		$.ajax({
 			url: url,
 			dataType: "jsonp",
 			success : this.parseWeatherResponse,
 			error : function(req, err){ console.log('API call failed ' + err); }
+			})
 		})
 	}
 //============================================================
 //============================================================
+//============================================================
+//============================================================
+
+
 
 //============================================================
-//=============== FORCAST DATA FETCH AND DISPLAY =============
+//============================================================
+//============================================================
+//=============== FORCAST DATA FETCH AND DISPLAY ============= 		DESCRIPTION: API WILL FETCH DETAILS ABOUT WHEATHER IN THE NEXT 5 DAYS
+
 	fetchForecastData = () => {
-		var url = "http://api.openweathermap.org/data/2.5/forecast?q=London&units=metric&APPID=a22d157664c6fbc5a70d03449d24bab3";
+		let a =navigator.geolocation.getCurrentPosition((pos)=>
+		{
+			var crd=pos.coords;
+			var lat= crd.latitude;
+			var long = crd.longitude
+			console.log(lat)
+			console.log(long)
+		var url = "http://api.openweathermap.org/data/2.5/forecast?lat="+lat+"&lon="+long+"&units=metric&APPID=a22d157664c6fbc5a70d03449d24bab3";
 		$.ajax({
 			url: url,
 			dataType: "jsonp",
 			success : this.parseForecastResponse,
 			error : function(req, err){ console.log('API call failed ' + err); }
 		})
+	})
 
 	}
 //============================================================
 //============================================================
+//============================================================
+//============================================================
+
 
 
 //============================================================
-//=============== TFL DATA FETCH AND DISPLAY =============
+//============================================================
+//============================================================
+//=============== TFL DATA FETCH AND DISPLAY ============= 		DESCRIPTION: API WILL FETCH TFL TRAIN LINE DETAILS AND THEIR CONDITIONS
+
 	fetchTflData = () => {
 		var url = "https://api.tfl.gov.uk/Line/Mode/tube%2Cdlr%2Coverground/Status?detail=true&app_id=2cf7f9a8&app_key=%20%20%20%2001aef9b37ed476700c32051e34bc4b83";
 		$.ajax({
@@ -103,12 +157,17 @@ fetchLocation= ()=>{
 		})
 
 	}
-
+//============================================================
+//============================================================
 //============================================================
 //============================================================
 
-//==================================================
-//=============== WEATHER ICON FETCH =============
+
+
+//================================================
+//================================================
+//================================================
+//=============== WEATHER ICON FETCH ============= 		DESCRIPTION: MAIN WEATHER ICON WILL BE SET ACCORDING TO THE WEATHER CONDITIONS
 
 	mainWeatherSymbol(conditionsCode) {
 		// "../../assets/icons/Large_sunny.png"
@@ -127,7 +186,6 @@ fetchLocation= ()=>{
 
 			case 802: case 803:
 			case 804: return '../../assets/icons/Large_cloudy.png';
-
 			case 801: '../../assets/icons/Large_partly_sunny.png';
 
 			case 800: return  '../../assets/icons/Large_sunny.png';
@@ -135,14 +193,19 @@ fetchLocation= ()=>{
 			default: return;
 		}
 	}
-//==================================================
-//==================================================
+//================================================
+//================================================
+//================================================
+//================================================
+
+
 
 //==================================================
-//=============== FORECASTS ICON FETCH =============
+//==================================================
+//==================================================
+//=============== FORECASTS ICON FETCH ============= 		DESCRIPTION: FORECASTED WEATHER ICONS WILL BE SET ACCORDING TO FORECASTED CONDITIONS
 
 	forecastWeatherSymbol(conditionsCode) {
-		// "../../assets/icons/Large_sunny.png"
 
 		switch (conditionsCode) {
 			case 300: case 301: case 302: case 310: case 311:
@@ -168,9 +231,14 @@ fetchLocation= ()=>{
 	}
 //==================================================
 //==================================================
+//==================================================
+//==================================================
+
 
 //==========================================
-//=============== GET WEEKEDAY =============
+//==========================================
+//==========================================
+//=============== GET WEEKEDAY ============= 		DESCRIPTION: DAY OF THE WEEK WILL BE RETURNED FOR EACH FORECASTED DAY LISTED
 
 getDayofWeek(day)
 {
@@ -188,10 +256,16 @@ getDayofWeek(day)
 }
 //==========================================
 //==========================================
+//==========================================
+//==========================================
 
 
-//==============TEMPERATURE CONVERT========================
+
 //=============================================
+//=============================================
+//=============================================
+//=======CELCIUS TO FARENHEIT CONVERT========== 		DESCRIPTION: UNIT OF MEASUREMENT FOR WEATHER IS CHANGED FROM CELCIUS TO FARENHEIT
+
 celToFarConvert() {
 	var newMainTemp = (this.state.temp * (9/5)) + 32;
 	newMainTemp = Math.round(newMainTemp);
@@ -213,6 +287,16 @@ celToFarConvert() {
 }
 //=============================================
 //=============================================
+//=============================================
+//=============================================
+
+
+
+//=============================================
+//=============================================
+//=============================================
+//=======FARENHEIT TO CELCIUS CONVERT==========  		DESCRIPTION: UNIT OF MEASUREMENT FOR WEATHER IS CHANGED FROM FARENHEIT TO CELCIUS
+
 
 farToCelConvert() {
 	var newMainTemp = (this.state.temp - 32) * (5/9) ;
@@ -233,19 +317,34 @@ farToCelConvert() {
 		celColour: "white"
 	});
 }
+//=============================================
+//=============================================
+//=============================================
+//=============================================
 
 
 
-
-//=============GET TIME=================
 //=======================================
+//=======================================
+//=======================================
+//=============GET TIME==================   		DESCRIPTION: CURRENT TIME IS RETRIEVED FROM A DATE OBJECT (TO BE USED TO DETERMINE DAY/NIGHT MODE)
+
 getTime() { // EDIT THIS
 	var date = new Date();
 	return date.getHours();
 }
+//=======================================
+//=======================================
+//=======================================
+//=======================================
+
+
 
 //=======================================
 //=======================================
+//=======================================
+//=============SWITCH PAGE===============   		DESCRIPTION: TOGGLE THAT WILL SWITCH PAGES ON CLICK OF A BUTTON
+
 toggle_func(){
 	if (this.state.toggle_page==true)
 	{
@@ -256,36 +355,23 @@ toggle_func(){
 		this.setState({toggle_page:true})
 	}
 }
+//=======================================
+//=======================================
+//=======================================
+//=======================================
 
 
-//==================================
-//==================================
-defaultLocation() {
-	var location = prompt("Please enter your location");
 
-}
-//==================================
-//==================================
-
-filter_tfl_lines() {
-	{/*var updatedTFL = this.state.tfl_checkList.map((x) => {
-		if(x.checked) {
-			return x;
-		}
-	}) */}
-
-
-}
-
-
-//==================================
-//=============== MAIN =============
+//=============================================================================
+//=============================================================================
+//=============================================================================
+//==============================MAIN PAGE =====================================   		DESCRIPTION: ALL ELEMENTS OF THE MAIN PAGE, INCLUDING WEATHER AND TRANSPORT INFO
 
 	// the main render method for the iphone component
 	render() {
 		// check if temperature data is fetched, if so add the sign styling to the page
 		const tempStyles = this.state.temp ? `${style.temperature} ${style.filled}` : style.temperature;
-		const forecastStyles = this.state.temp ? `${style.previewForecastsHigh} ${style.filled}` : style.forecasts;
+		const forecastStyles = this.state.temp ? `${style.previewForecastsHigh} ${style.filled}` : style.previewForecastsHigh;
 		var time = this.getTime();
 		let main = (<div class={ style.header }>
 							<div class={ style.city }>
@@ -306,13 +392,12 @@ filter_tfl_lines() {
 									<tr>
 										<td class={ style.lastUpdated }>Last updated {this.state.time}</td>
 									</tr>
-
 									<tr>
 										<td class={ style.dailyLook }>Daily Look</td>
 									</tr>
 								</table>
 							</div>
-							<div class = {style.forecasts} >
+							<div>
 								<table>
 									<tr>
 										{this.state.days.map((item, key) => {
@@ -345,45 +430,75 @@ filter_tfl_lines() {
 							</div>
 						</div>);
 
+//=============================================================================
+//=============================================================================
+//=============================================================================
+//=============================================================================
+
+
+
+//=============================================================================
+//=============================================================================
+//=============================================================================
+//==============================SETTINGS PAGE =================================   		DESCRIPTION: SETTINGS PAGE THAT WILL LET USER FILTER TRANSPORT OPTIONS TO SUIT THEM
+
 		let otherPage = (
 						<div class={ style.header }>
-							<div class={ style.city }>
+							<div class={ style.title }>
 								Settings
 							</div>
 								<table>
 									<tr>
-										<td>TFL Line Filter</td>
+										<td class={ style.tflline }>TFL Line Filter</td>
 									</tr>
 									<tr>
-										<td>Select the lines interesting to you</td>
+										<td class={ style.interestingline }>Select the lines interesting to you</td>
 									</tr>
 								</table>
-							<div>
-								{this.state.tfl_checkList}
-								<input type = "submit" value = "Confirm" onClick = {this.filter_tfl_lines()}> </input>
-							</div>
-
+							<form>
+							{this.state.tfl_Options}
+							</form>
 							<div class={style.footer}>
-							<table align="center">
-								<tr>
-									<td><button onclick={this.toggle_func}>Back</button></td>
-								</tr>
-								<tr>
-									<td><button onClick = {this.defaultLocation}> Set Location </button></td>
-								</tr>
-							</table>
+							<button onclick={this.toggle_func}>Back</button>
 							</div>
 						</div>);
-		return (
-			<div class={ time >= 19 || time < 6 ? style.containerDark : style.containerLight }>
-			<span>{this.state.toggle_page==true ? main : otherPage}</span>
-			</div>
-		);
+
+
+
+
+//=============================================================================
+//=============================================================================
+//=============================================================================
+//=============================================================================
+
+
+//==================================
+//==================================
+
+// RETURN APPROPRIATE PAGE / TOGGLE DAY-NIGHT MODE
+
+						return (
+							<div>
+							{this.state.toggle_page ?
+								(<div class={ time >= 19 || time < 6 ? style.containerDark : style.containerLight }>
+								<span> {main} </span>
+								</div>)
+								:
+								(<div class={ time >= 19 || time < 6 ? style.settingsDark : style.settingsLight }>
+								<span> {otherPage} </span>
+								</div>)
+							};
+							</div>
+					)
 	}
-
 //==================================
 //==================================
 
+
+//=======================================
+//=======================================
+//=======================================
+//=======MAIN WEATHER API RESPONSE=======   		DESCRIPTION: VARIABLES RETRIEVED FROM MAIN WEATHER API WILL STORE VARIABLES IN COMPONENT STATES
 
 	parseWeatherResponse = (parsed_json) => {
 		var location = parsed_json['name'];
@@ -399,6 +514,17 @@ filter_tfl_lines() {
 			code : condCode,
 		});
 	}
+//=======================================
+//=======================================
+//=======================================
+//=======================================
+
+
+
+//=======================================
+//=======================================
+//=======================================
+//==5-DAY FORECAST WEATHER API RESPONSE==    		DESCRIPTION: VARIABLES RETRIEVED FROM FORECASTED WEATHER API WILL STORE VARIABLES IN COMPONENT STATES
 
 	parseForecastResponse = (parsed_json) => {
 		this.setState({
@@ -408,19 +534,16 @@ filter_tfl_lines() {
 			condImages: []
 		})
 		var forecast = new Array(5);
-		for(var i =0 ; i<5;i++)
-		{
+		for(var i =0 ; i<5;i++){
 			forecast[i]= Math.round(parsed_json['list'] [i*8] ['main'] ['temp']);
 		}
 		var conditions = new Array(5);
-		for(var i =0 ; i<5;i++)
-		{
+		for(var i =0 ; i<5;i++){
 			conditions[i]= parsed_json['list'] [i*8] ['weather']['0']['description'];
 		}
 
 		var condcode = new Array(5)
-		for(var i =0 ; i<5;i++)
-		{
+		for(var i =0 ; i<5;i++){
 			condcode[i]= parsed_json['list'] [i*8] ['weather']['0']['id'];
 		}
 
@@ -441,58 +564,152 @@ filter_tfl_lines() {
 			condImages: condcode
 		});
 	}
+//=======================================
+//=======================================
+//=======================================
+//=======================================
 
 
-	parseTFLResponse = (parsed_json) =>
-	{
-		this.setState({
-			tfl_name:[]
+
+//=======================================
+//=======================================
+//=======================================
+//=======TFL API RESPONSE================     		DESCRIPTION: REPSONSE FROM TFL API THAT WILL BE USED TO CREATE SETTING CHECKBOX AMONG OTHER RELATED VARIABLES
+
+parseTFLResponse = (parsed_json) =>
+{
+	let tflList_of_effected;
+
+
+	let id =0
+		let tflLines = parsed_json.map((x) => {
+			let desc = x['lineStatuses'][0]['statusSeverityDescription'];
+			let res = x['lineStatuses']['0']['reason'];
+			let name =x['name']
+			let checked=false
+			let tfl_id = id
+			id=id+1
+			return {name,checked,tfl_id,desc,res}
 		})
-		let tflList;
+		console.log(tflLines)
+		// Return certain lines based on their severity status
+		this.setState({
+			tfl_lines:tflLines
+		});
+		this.check_options()
 
-			let tflLines = parsed_json.map((x) => {
-				let desc = x['lineStatuses'][0]['statusSeverityDescription'];
-				let res = x['lineStatuses'] ['0'] ['reason'];
-				return {desc, res}
-			})
+		let tfl_f =tflLines.map(item =>
+			<div class = {style.tflContainer} >
+				{item.name}<input type = "checkbox" onChange = {this.onToggle.bind(this,item) } ></input>
+			</div>)
 
 
-			// Return certain lines based on their severity status
-			let tflLinesAffected = tflLines.filter((x) => {
-				return x.desc != "Good Service" //"Good Service"
+		this.setState({
+			tfl_Options:tfl_f
+		})
+}
+//=======================================
+//=======================================
+//=======================================
+//=======================================
 
-			})
 
-			if (tflLinesAffected.length == 0) {
-				tflList =  <p style = "background-color: green; margin: 0;">All lines are in good service</p>;
+
+	//=================================================
+	//=========TOGGLE TFL CHECKLIST STATUS=============     		DESCRIPTION: A TOGGLE FOR DETERMINING IF USER HAS FILTER A TFL OPTION OR NOT
+
+		onToggle(item){
+		 var index = item['tfl_id']
+		 this.setState(state =>{
+			 const tflname = state.tfl_lines.map((item)=>{
+				 if (item['tfl_id'] == index)
+				 	{
+					 if (item['checked']==true)
+					 {
+					 	item['checked']=false
+					 }
+
+					 else
+					 {
+							 item['checked']=true
+					 }
+			 		}
+			 })
+		 })
+	this.check_options()
+	console.log(this.state.tfl_lines)
+	}
+
+	//=================================================
+	//=================================================
+
+
+
+	//=======================================
+	//=======================================
+	//=======================================
+	//=======DISPLAY & FILTER TFL LINES======     		DESCRIPTION: FUNCTION THAT WILL DISPLAY THE OUTPUT OF AFFECTED TFL LINES & THOSE FILTER BY USER
+
+	check_options(){
+		let tflList_of_effected;
+		let tflChoice = this.state.tfl_lines.filter((x) => {
+			return x.checked == true //
+		})
+		console.log(tflChoice)
+		let tflChoiceEffected = tflChoice.filter((x)=>{
+			return x.desc!="Good Service"
+		})
+		console.log(tflChoiceEffected)
+
+		console.log(tflChoiceEffected.length)
+		let tflLinesAffected = this.state.tfl_lines.filter((x) => {
+			return x.desc != "Good Service" //"Good Service"
+		})
+		if (tflChoice.length ==0){
+			if (tflLinesAffected.length == 0 ) {//when all lines are good service
+				tflList_of_effected =  <p style = "background-color: green; margin: 0;">All lines are in good service</p>;
 			}
-			else {
-			 tflList = tflLinesAffected.map(item =>
+			else{
+			tflList_of_effected = tflLinesAffected.map(item =>
 				<div class = {style.tflContainer}>
-					<img src = '../../assets/icons/Bubble1.png' />
-						<div class = {style.TEXT}>{item.res}</div>
+				<img src = '../../assets/icons/Bubble1.png' />
+				<div class = {style.TEXT}>{item.res}</div>
 				</div>)
 			}
-
-			/////////////////////////////////////////////////////////////////
-
-			let tflName=parsed_json.map((x)=>{
-				let name =x['name']
-				return {name}
-			})
-
-			tflName =tflName.map(item =>
-			 	<div class = {style.tflContainer}>
-					{item.name} <input type = "checkbox" value={item}> </input>
-			 	</div>)
-
-		 /////////////////////////////////////////////////////////////////
-
-			this.setState({
-				tfl: tflList,
-				tfl_checkList: tflName
-			});
+		}
+		else {
+			if (tflChoiceEffected.length==0){
+				tflList_of_effected =  <p style = "background-color: green; margin: 0;">All chosen lines are in good service</p>;
+			}
+			else{
+				tflList_of_effected = tflChoiceEffected.map(item =>
+					<div class = {style.tflContainer}>
+					<img src = '../../assets/icons/Bubble1.png' />
+					<div class = {style.TEXT}>{item.res}</div>
+					</div>)
+		}
 	}
+		this.setState({
+			tfl:tflList_of_effected
+		})
+
+
+		}
+
+	//=======================================
+	//=======================================
+	//=======================================
+	//=======================================
+
+
+
+
+
+
+	//=======================================
+	//=======================================
+	//=======================================
+	//=======LOCATION API RESPONSE===========     		DESCRIPTION: RESULTS OF LOCATION API TO BE USED TO DISPLAY USER'S LOCATION ON SCREEN AND FETCH WEATHER DATA ABOUT THEIR AREA
 
 	parseLocationResponse = (parsed_json) =>{
 		let location= parsed_json['results'][0]['components']['suburb']
@@ -509,4 +726,48 @@ filter_tfl_lines() {
 			time:time_t
 		})
 	}
-}
+
+	//=======================================
+	//=======================================
+	//=======================================
+	//=======================================
+
+
+} //////////////// END OF IPHONE COMPONENT ////////////////
+
+
+
+
+// parseBusRepsonse=(parsed_json)=>
+// {
+	// 	this.setState({
+		// 		bus_stop_names:[]
+		// 	})
+		// 	var bus_stop = new Array (5);
+		// 	for (var i =0 ; i<5 ; i++)
+		// 	{
+			// 		bus_stop[i]= parsed_json['member'][i]['name']
+			// 	}
+			// 	console.log(bus_stop)
+			// 	this.setState({
+				// 		bus_stop_names:bus_stop
+				// 	})
+				// }
+				// //===========================================================
+				// //===========================================================
+				// 	fetchBus = () =>
+				// 	{
+					// 		let a =navigator.geolocation.getCurrentPosition((pos)=>
+					// 		{
+						// 			var crd=pos.coords;
+						// 			var lat= crd.latitude;
+						// 			var long = crd.longitude
+						// 		var url = "http://transportapi.com/v3/uk/places.json?lat="+lat+"&lon="+long+"&type=bus_stop&app_id=781764bb&app_key=40a177294f041ee56d9ba84ef1b5849a";
+						// 		$.ajax({
+							// 			url: url,
+							// 			dataType: "jsonp",
+							// 			success : this.parseBusRepsonse,
+							// 			error : function(req, err){ console.log('API call failed Bus ' + err); }
+							// 			})
+							// 		})
+							// 	}
