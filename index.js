@@ -426,7 +426,7 @@ toggle_func(){
 								{this.state.tfl}
 							</div>
 							<div class={style.footer}>
-							<button onclick={this.toggle_func}>Settings</button>
+							<button onclick={this.toggle_func}><span>Settings</span></button>
 							</div>
 						</div>);
 
@@ -459,7 +459,7 @@ toggle_func(){
 							{this.state.tfl_Options}
 							</form>
 							<div class={style.footer}>
-							<button onclick={this.toggle_func}>Back</button>
+							<button onclick={this.toggle_func}><span>Back</span></button>
 							</div>
 						</div>);
 
